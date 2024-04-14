@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto"
+      rel="stylesheet"
+    />
+
+    <title>My Application Notes</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body>
+    <div class="container">
+      <app-name></app-name>
+      <div class="content">
+        <div class="input-container">
+          <label for="title">Title</label>
+          <input
+            type="text"
+            id="title"
+            name="title"
+            class="title-input"
+            placeholder="e.g. My first note"
+          />
+          <p id="titleError" class="error-message">Judul harus diisi!</p>
+          <p id="titleNotFound" class="error-message">Judul tidak ada!</p>
+        </div>
+        <div class="input-container">
+          <label for="note">Note</label>
+          <textarea
+            name="note"
+            id="note"
+            cols="30"
+            rows="10"
+            placeholder="e.g. This is my first note"
+          ></textarea>
+          <p id="noteError" class="error-message">Catatan harus diisi!</p>
+        </div>
+        <div class="">
+          <label for="archive">Archive</label>
+          <input type="checkbox" id="archive" />
+        </div>
+        <app-button-container></app-button-container>
+        <div id="notes" class="container-notes"></div>
+        <button id="toggleArchiveButton" class="btn-show">
+          Show Archived Notes
+        </button>
+        <div id="hidden-notes" class="container-notes"></div>
+      </div>
+    </div>
+
+    <!-- Tempatkan animasi loading di sini -->
+    <div id="loading" class="loading"></div>
+
+    <!-- Modal -->
+    <div class="modal" id="myModal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="modalTitle"></h2>
+        <p id="modalBody"></p>
+        <button class="archive-btn">Archive</button>
+        <button class="delete-btn">Delete</button>
+      </div>
+    </div>
+    <app-footer></app-footer>
+
+    <script>
+      document
+        .getElementById("notes")
+        .addEventListener("click", function (event) {
+          if (event.target.classList.contains("card-container")) {
+            const noteId = event.target.dataset.noteId;
+            displayNoteModal(noteId);
+          }
+        });
+
+      document
+        .getElementsByClassName("close")[0]
+        .addEventListener("click", function () {
+          document.getElementById("myModal").style.display = "none";
+        });
+    </script>
+  </body>
+</html>
