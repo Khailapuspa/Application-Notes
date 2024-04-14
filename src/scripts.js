@@ -3,9 +3,8 @@ import "./styles.css";
 function getValues() {
   var title = document.getElementById("title").value;
   var note = document.getElementById("note").value;
-  var archive = document.getElementById("archive").checked;
 
-  return [title, note, archive];
+  return [title, note];
 }
 
 function Empty() {
@@ -17,7 +16,7 @@ function Empty() {
 function save() {
   document.getElementById("loading").style.display = "block";
 
-  var [title, note, archive] = getValues();
+  var [title, note] = getValues();
 
   if (title.trim() === "") {
     document.getElementById("titleError").style.display = "block";
@@ -66,7 +65,7 @@ function save() {
       console.error("There was a problem with your fetch operation:", error);
       setTimeout(function() {
         document.getElementById("loading").style.display = "none";
-      }, 9000); 
+      }, 10000); 
     });
 
   Empty();
@@ -293,110 +292,74 @@ function getCurrentNoteId() {
 }
 
 // Menampilkan Notes yang di di arsip
-async function showHidden() {
-  var hiddenNotesContainer = document.getElementById("hidden-notes");
-  hiddenNotesContainer.innerHTML = "";
+// async function showHidden() {
+//   var hiddenNotesContainer = document.getElementById("hidden-notes");
+//   hiddenNotesContainer.innerHTML = "";
 
-  var response = await fetch("https://notes-api.dicoding.dev/v2/notes/archived")
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      return response.json();
-    })
-    .catch((error) => {
-      console.error("There was a problem with your fetch operation:", error);
-    });
+//   var response = await fetch("https://notes-api.dicoding.dev/v2/notes/archived")
+//     .then((response) => {
+//       if (!response.ok) {
+//         throw new Error("Network response was not ok");
+//       }
+//       return response.json();
+//     })
+//     .catch((error) => {
+//       console.error("There was a problem with your fetch operation:", error);
+//     });
 
-  console.log(response);
+//   console.log(response);
 
-  response.data.forEach(function (note) {
-    // Cek apakah catatan dengan ID yang sama sudah ada di dalam hiddenNotesContainer
-    if (!document.querySelector(`#hidden-notes [data-note-id="${note.id}"]`)) {
-      var cardContainer = document.createElement('div');
-      cardContainer.classList.add('card-container');
-      cardContainer.setAttribute('data-note-id', note.id);
+//   response.data.forEach(function (note) {
+//     // Cek apakah catatan dengan ID yang sama sudah ada di dalam hiddenNotesContainer
+//     if (!document.querySelector(`#hidden-notes [data-note-id="${note.id}"]`)) {
+//       var cardContainer = document.createElement('div');
+//       cardContainer.classList.add('card-container');
+//       cardContainer.setAttribute('data-note-id', note.id);
 
-      var cardContent = document.createElement('div');
-      cardContent.classList.add('card-content');
+//       var cardContent = document.createElement('div');
+//       cardContent.classList.add('card-content');
 
-      var cardTitle = document.createElement('div');
-      cardTitle.classList.add('card-title');
-      cardTitle.textContent = note.title;
+//       var cardTitle = document.createElement('div');
+//       cardTitle.classList.add('card-title');
+//       cardTitle.textContent = note.title;
 
-      var cardText = document.createElement('p');
-      cardText.classList.add('card-text');
-      cardText.textContent = note.body;
+//       var cardText = document.createElement('p');
+//       cardText.classList.add('card-text');
+//       cardText.textContent = note.body;
 
-      cardContent.appendChild(cardTitle);
-      cardContent.appendChild(cardText);
-      cardContainer.appendChild(cardContent);
+//       cardContent.appendChild(cardTitle);
+//       cardContent.appendChild(cardText);
+//       cardContainer.appendChild(cardContent);
 
-      hiddenNotesContainer.appendChild(cardContainer); 
-      cardContainer.addEventListener('click', function () {
-        showModal(note.id);
-      });
-    }
-  });
-}
-
+//       hiddenNotesContainer.appendChild(cardContainer); 
+//       cardContainer.addEventListener('click', function () {
+//         showModal(note.id);
+//       });
+//     }
+//   });
+// }
 
 function removeHiddenNotes() {
   var hiddenNotesContainer = document.getElementById("hidden-notes");
   hiddenNotesContainer.innerHTML = "";
 }
 
-function remove() {
-  var [title, note] = getValues();
-
-  var data = JSON.parse(localStorage.getItem("note")) || [];
-  var index = data.findIndex((data) => data.title === title);
-
-  if (index !== -1) {
-    data.splice(index, 1);
-    localStorage.setItem("note", JSON.stringify(data));
-  }
-  Empty();
-  show();
-}
-
-function clearAll() {
-  localStorage.clear();
-  show();
-}
-
 function showAll() {
   show();
 }
 
-function edit() {
-  var [title, note] = getValues();
-  var notes = JSON.parse(localStorage.getItem("note")) || [];
-  var existing = notes.find((note) => note.title === title);
-  if (!existing) {
-    document.getElementById("titleNotFound").style.display = "block";
-    document.getElementById("titleError").style.display = "none";
-    document.getElementById("noteError").style.display = "none";
-    return;
-  } else {
-    document.getElementById("titleNotFound").style.display = "none";
-    document.getElementById("titleError").style.display = "none";
-    document.getElementById("noteError").style.display = "none";
-  }
-  document.getElementById("note").value = existing.body;
-}
 
-function styleMethod() {
-  var note = document.getElementById("note");
-  var selectedText = note.value.substring(
-    note.selectionStart,
-    note.selectionEnd
-  );
-  var before = note.value.substring(0, note.selectionStart);
-  var after = note.value.substring(note.selectionEnd, note.value.length);
+// function styleMethod() {
+//   var note = document.getElementById("note");
+//   var selectedText = note.value.substring(
+//     note.selectionStart,
+//     note.selectionEnd
+//   );
+//   var before = note.value.substring(0, note.selectionStart);
+//   var after = note.value.substring(note.selectionEnd, note.value.length);
 
-  return [selectedText, before, after];
-}
+//   return [selectedText, before, after];
+// }
 
 customElements.define(
   "app-name",
@@ -459,8 +422,7 @@ customElements.define(
       shadowRoot.innerHTML = `
                     <style>
                         .btn-container {
-                            display: grid;
-                            grid-template-columns: repeat(4, minmax(0, 1fr));
+                          text-align: center;
                             gap: 0.5rem;
                         }
 
@@ -471,9 +433,10 @@ customElements.define(
                         .btn-style {
                             color: #ffffff;
                             font-weight: bold;
-                            padding: 0.5rem 1rem;
+                            padding: 0.75rem 1rem;
                             border-radius: 0.25rem;
                             border: none;
+                            width: 100%;
                         }
 
                         .btn-style:hover {
@@ -481,44 +444,15 @@ customElements.define(
                         }
 
                         .blue {
-                            background-color: #3b82f6;
+                            background-color: #3b82f6;.. 
                         }
 
-                        .red {
-                            background-color: #ff0000;
-                        }
-
-                        .green {
-                            background-color: #008000;
-                        }
-
-                        .btn-style.blue:hover {
-                            background-color: #4f94ff;
-                        }
-
-                        .btn-style.red:hover {
-                            background-color: #cc0000;
-                        }
-
-                        .btn-style.green:hover {
-                            background-color: #006400;
-                        }
                     </style>
                     <div class="btn-container">
                         <button class="btn-style blue" id="saveButton">Save</button>
-                        <button class="btn-style green" id="editButton">Edit</button>
-                        <button class="btn-style red" id="removeButton">Remove</button>
-                        <button class="btn-style red" id="resetButton">Reset</button>
                     </div>
                 `;
       shadowRoot.getElementById("saveButton").addEventListener("click", save);
-      shadowRoot.getElementById("editButton").addEventListener("click", edit);
-      shadowRoot
-        .getElementById("removeButton")
-        .addEventListener("click", remove);
-      shadowRoot
-        .getElementById("resetButton")
-        .addEventListener("click", clearAll);
     }
   }
 );
